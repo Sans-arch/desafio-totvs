@@ -38,7 +38,7 @@ public class PayableController {
     @GetMapping
     public ResponseEntity<Page<GetPayableResponseDto>> listPayableWithFilter(
             @RequestParam(required = false) String description,
-            @RequestParam(required = false) LocalDateTime dueDate,
+            @RequestParam(name = "due_date", required = false) LocalDateTime dueDate,
             Pageable pageable) {
         var payables = payableService.findPayables(description, dueDate, pageable)
                 .map(

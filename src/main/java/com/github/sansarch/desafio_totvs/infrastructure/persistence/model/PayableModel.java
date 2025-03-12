@@ -25,7 +25,7 @@ public class PayableModel {
     @Column
     private LocalDateTime dueDate;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime paymentDate;
 
     @Column

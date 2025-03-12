@@ -9,7 +9,7 @@ public class PayableSpecification {
 
     public static Specification<PayableModel> hasDueDate(LocalDateTime dueDate) {
         return (root, query, criteriaBuilder) ->
-                dueDate == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get("dueDate"), dueDate);
+                dueDate == null ? criteriaBuilder.conjunction() : criteriaBuilder.lessThanOrEqualTo(root.get("dueDate"), dueDate);
     }
 
     public static Specification<PayableModel> hasDescription(String description) {
