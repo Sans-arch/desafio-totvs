@@ -16,9 +16,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -104,5 +109,32 @@ public class PayableService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return new TotalPaidOutputDto(startDate, endDate, totalPaid);
+    }
+
+    public void processCsv(MultipartFile file) throws IOException {
+        List<Payable> payables = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            boolean firstLine = true;
+
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String[] data = line.split(",");
+
+                String description = data[0].trim();
+                BigDecimal value = new BigDecimal(data[1].trim());
+                LocalDateTime dueDate = LocalDateTime.parse(data[2].trim());
+
+                Payable payable = PayableFactory.createNewPayable(dueDate, value, description);
+                var payableModel = PayableMapper.INSTANCE.toPayableModel(payable);
+                payableRepository.save(payableModel);
+                payables.add(payable);
+            }
+        }
     }
 }

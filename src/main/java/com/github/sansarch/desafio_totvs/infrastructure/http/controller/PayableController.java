@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -102,5 +104,19 @@ public class PayableController {
     public ResponseEntity<Void> cancelPayable(@PathVariable UUID id) {
         payableService.cancelPayable(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/import", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity importPayablesFromCsv(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
+            return ResponseEntity.badRequest().body("Arquivo inválido. Envie um arquivo CSV.");
+        }
+
+        try {
+            payableService.processCsv(file);
+            return ResponseEntity.ok("Importação realizada com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar o arquivo: " + e.getMessage());
+        }
     }
 }
