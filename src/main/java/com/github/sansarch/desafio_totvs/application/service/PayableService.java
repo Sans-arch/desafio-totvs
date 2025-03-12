@@ -1,6 +1,7 @@
 package com.github.sansarch.desafio_totvs.application.service;
 
 import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
+import com.github.sansarch.desafio_totvs.application.dto.TotalPaidOutputDto;
 import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.mapper.PayableMapper;
 import com.github.sansarch.desafio_totvs.domain.entity.Payable;
@@ -16,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -88,5 +91,18 @@ public class PayableService {
 
         payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
         return payable;
+    }
+
+    public TotalPaidOutputDto calculateTotalPaid(LocalDateTime startDate, LocalDateTime endDate) {
+        Specification<PayableModel> spec = Specification
+                .where(PayableSpecification.hasDueDateBetween(startDate, endDate))
+                .and(PayableSpecification.hasStatusPaid());
+
+        List<PayableModel> payables = payableRepository.findAll(spec);
+        BigDecimal totalPaid = payables.stream()
+                .map(PayableModel::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new TotalPaidOutputDto(startDate, endDate, totalPaid);
     }
 }

@@ -7,6 +7,7 @@ import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,17 @@ public class PayableController {
                 payable.getDescription(),
                 payable.getStatus()
         );
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/total-paid")
+    public ResponseEntity<TotalPaidResponseDto> getTotalPaid(
+            @RequestParam(name = "start_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam (name = "end_date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        var totalPaid = payableService.calculateTotalPaid(startDate, endDate);
+        var responseDto = new TotalPaidResponseDto(totalPaid.startDate(), totalPaid.endDate(), totalPaid.totalPaid());
         return ResponseEntity.ok(responseDto);
     }
 
