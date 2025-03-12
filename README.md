@@ -18,7 +18,7 @@ descrito abaixo.
 - [x] Organizar o projeto com Domain Driven Design.
 - [x] Utilizar o Flyway para criar a estrutura de banco de dados.
 - [x] Utilizar JPA.
-- [ ] Todas as APIs de consulta devem ser paginadas.
+- [x] Todas as APIs de consulta devem ser paginadas.
 
 #### Requisitos Específicos
 - [x] Cadastrar a tabela no banco de dados para armazenar as contas a pagar. Deve
