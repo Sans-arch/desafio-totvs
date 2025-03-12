@@ -5,93 +5,110 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PayableTest {
-
     @Test
-    void shouldReturnCorrectId() {
-        Payable payable = new Payable(1L, null, null, null, null, null);
-        assertEquals(1L, payable.getId());
+    void shouldCreatePayableWithPendingStatusAsDefault() {
+        Payable payable = new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        assertEquals(PayableStatus.PENDING, payable.getStatus());
     }
 
     @Test
-    void shouldReturnNullWhenIdIsNull() {
-        Payable payable = new Payable(null, null, null, null, null, null);
-        assertNull(payable.getId());
-    }
-
-    @Test
-    void shouldReturnCorrectDueDate() {
-        LocalDateTime dueDate = LocalDateTime.now();
-        Payable payable = new Payable(1L, dueDate, null, null, null, null);
-        assertEquals(dueDate, payable.getDueDate());
-    }
-
-    @Test
-    void shouldReturnCorrectPaymentDate() {
+    void shouldRestoreExistingPayable() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime dueDate = LocalDateTime.now().plusDays(1);
         LocalDateTime paymentDate = LocalDateTime.now();
-        Payable payable = new Payable(1L, null, paymentDate, null, null, null);
-        assertEquals(paymentDate, payable.getPaymentDate());
+        BigDecimal value = BigDecimal.TEN;
+        String description = "Test description";
+        PayableStatus status = PayableStatus.PENDING;
+
+        Payable restoredPayable = new Payable(
+                id,
+                dueDate,
+                paymentDate,
+                value,
+                description,
+                status);
+
+        assertEquals(restoredPayable.getId(), restoredPayable.getId());
+        assertEquals(restoredPayable.getDueDate(), restoredPayable.getDueDate());
+        assertEquals(restoredPayable.getPaymentDate(), restoredPayable.getPaymentDate());
+        assertEquals(restoredPayable.getValue(), restoredPayable.getValue());
+        assertEquals(restoredPayable.getDescription(), restoredPayable.getDescription());
+        assertEquals(restoredPayable.getStatus(), restoredPayable.getStatus());
     }
 
     @Test
-    void shouldReturnCorrectValue() {
-        BigDecimal value = BigDecimal.valueOf(100.00);
-        Payable payable = new Payable(1L, null, null, value, null, null);
-        assertEquals(value, payable.getValue());
+    void shouldMarkPayableAsPaid() {
+        Payable payable = new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        payable.markAsPaid();
+        assertEquals(PayableStatus.PAID, payable.getStatus());
+        assertNotNull(payable.getPaymentDate());
     }
 
     @Test
-    void shouldReturnCorrectDescription() {
-        String description = "Test Description";
-        Payable payable = new Payable(1L, null, null, null, description, null);
-        assertEquals(description, payable.getDescription());
+    void shouldNotAllowMarkingPayableAsPaidIfAlreadyPaid() {
+        Payable payable = new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        payable.markAsPaid();
+        assertThrows(PayableException.class, payable::markAsPaid);
     }
 
     @Test
-    void shouldReturnCorrectStatus() {
-        var status = PayableStatus.PAID;
-        Payable payable = new Payable(1L, null, null, null, null, status);
-        assertEquals(status, payable.getStatus());
+    void shouldNotAllowMarkingPayableAsPaidIfCanceled() {
+        Payable payable = new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        payable.cancel();
+        assertThrows(PayableException.class, payable::markAsPaid);
     }
 
     @Test
     void shouldCancelPayable() {
-        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PENDING);
+        Payable payable = new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
         payable.cancel();
         assertEquals(PayableStatus.CANCELED, payable.getStatus());
     }
 
     @Test
-    void shouldMarkAsPaid() {
-        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PENDING);
-        payable.markAsPaid();
-        assertEquals(PayableStatus.PAID, payable.getStatus());
-    }
-
-    @Test
-    void shouldNotMarkAsPaidAndThrowExceptionIfPayableWasCanceled() {
-        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.CANCELED);
-        assertThrows(PayableException.class, () -> payable.markAsPaid());
-    }
-
-    @Test
-    void shouldNotMarkAsPaidAndThrowExceptionIfPayableWasAlreadyPaid() {
-        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PAID);
-        assertThrows(PayableException.class, () -> payable.markAsPaid());
-    }
-
-    @Test
-    void shouldReturnTrueIfPayableIsOverdue() {
-        Payable payable = new Payable(1L, LocalDateTime.now().minusDays(1), null, null, null, PayableStatus.PENDING);
+    void shouldIdentifyPayableAsOverdue() {
+        Payable payable = new Payable(LocalDateTime.now().minusDays(1), BigDecimal.TEN, "Test description");
         assertTrue(payable.isOverdue());
     }
 
     @Test
-    void shouldReturnFalseIfPayableIsNotOverdue() {
-        Payable payable = new Payable(1L, LocalDateTime.now().plusDays(1), null, null, null, PayableStatus.PENDING);
+    void shouldNotIdentifyPayableAsOverdueIfPaid() {
+        Payable payable = new Payable(LocalDateTime.now().minusDays(1), BigDecimal.TEN, "Test description");
+        payable.markAsPaid();
         assertFalse(payable.isOverdue());
+    }
+
+    @Test
+    void shouldNotIdentifyPayableAsOverdueIfCanceled() {
+        Payable payable = new Payable(LocalDateTime.now().minusDays(1), BigDecimal.TEN, "Test description");
+        payable.cancel();
+        assertFalse(payable.isOverdue());
+    }
+
+    @Test
+    void shouldValidateDueDate() {
+        assertThrows(PayableException.class, () -> new Payable(null, BigDecimal.TEN, "Test description"));
+    }
+
+    @Test
+    void shouldValidateValue() {
+        assertThrows(PayableException.class, () -> new Payable(LocalDateTime.now().plusDays(1), null, "Test description"));
+    }
+
+    @Test
+    void shouldValidateDescription() {
+        assertThrows(PayableException.class, () -> new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, null));
+        assertThrows(PayableException.class, () -> new Payable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, ""));
+    }
+
+    @Test
+    void shouldValidatePayable() {
+        assertThrows(PayableException.class, () -> new Payable(null, null, null));
+        assertThrows(PayableException.class, () -> new Payable(null, null, ""));
     }
 }

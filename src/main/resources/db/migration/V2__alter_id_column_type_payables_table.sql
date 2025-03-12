@@ -1,0 +1,9 @@
+ALTER TABLE payables ADD COLUMN new_id UUID NOT NULL;
+
+ALTER TABLE payables DROP CONSTRAINT payables_pkey;
+
+ALTER TABLE payables DROP COLUMN id;
+
+ALTER TABLE payables RENAME COLUMN new_id TO id;
+
+ALTER TABLE payables ADD PRIMARY KEY (id);
