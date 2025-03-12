@@ -1,4 +1,4 @@
-package com.github.sansarch.desafio_totvs.infra.repository.model;
+package com.github.sansarch.desafio_totvs.infrastructure.repository.model;
 
 import com.github.sansarch.desafio_totvs.domain.entity.PayableStatus;
 import jakarta.persistence.*;
