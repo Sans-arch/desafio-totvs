@@ -1,14 +1,17 @@
 package com.github.sansarch.desafio_totvs.infrastructure.http.controller;
 
+import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.service.PayableService;
-import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
 import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -30,6 +33,24 @@ public class PayableController {
                 createdPayable.getStatus()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<GetPayableResponseDto>> listPayableWithFilter(
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) LocalDateTime dueDate,
+            Pageable pageable) {
+        var payables = payableService.findPayables(description, dueDate, pageable)
+                .map(
+                payable -> new GetPayableResponseDto(
+                        payable.getId(),
+                        payable.getDueDate(),
+                        payable.getValue(),
+                        payable.getDescription(),
+                        payable.getStatus()
+                ));
+        
+        return ResponseEntity.ok(payables);
     }
 
     @GetMapping("/{id}")

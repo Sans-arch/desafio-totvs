@@ -8,9 +8,15 @@ import com.github.sansarch.desafio_totvs.domain.entity.PayableStatus;
 import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
 import com.github.sansarch.desafio_totvs.domain.factory.PayableFactory;
 import com.github.sansarch.desafio_totvs.infrastructure.persistence.PayableRepository;
+import com.github.sansarch.desafio_totvs.infrastructure.persistence.filter.PayableSpecification;
+import com.github.sansarch.desafio_totvs.infrastructure.persistence.model.PayableModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -27,6 +33,23 @@ public class PayableService {
         payableRepository.save(payableModel);
 
         return PayableMapper.INSTANCE.toPayableEntity(payableModel);
+    }
+
+    public Page<Payable> findPayables(String description, LocalDateTime dueDate, Pageable pageable) {
+        Specification<PayableModel> filtersSpecification = Specification
+                .where(PayableSpecification.hasDueDate(dueDate))
+                .and(PayableSpecification.hasDescription(description));
+
+        return payableRepository
+                .findAll(filtersSpecification, pageable)
+                .map(payableModel -> PayableFactory.createPayableWithExistingId(
+                        payableModel.getId(),
+                        payableModel.getDueDate(),
+                        payableModel.getPaymentDate(),
+                        payableModel.getValue(),
+                        payableModel.getDescription(),
+                        payableModel.getStatus()
+                ));
     }
 
     public Payable getPayable(UUID id) {
