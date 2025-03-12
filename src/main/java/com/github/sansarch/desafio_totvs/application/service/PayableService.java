@@ -37,4 +37,10 @@ public class PayableService {
         payable.cancel();
         payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
     }
+
+    public void payPayable(UUID id) {
+        var payable = getPayable(id);
+        payable.markAsPaid();
+        payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
+    }
 }
