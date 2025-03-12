@@ -17,7 +17,7 @@ descrito abaixo.
 - [ ] Utilizar mecanismo de autenticação.
 - [ ] Organizar o projeto com Domain Driven Design.
 - [x] Utilizar o Flyway para criar a estrutura de banco de dados.
-- [ ] Utilizar JPA.
+- [x] Utilizar JPA.
 - [ ] Todas as APIs de consulta devem ser paginadas.
 
 #### Requisitos Específicos
