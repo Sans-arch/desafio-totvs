@@ -31,4 +31,10 @@ public class PayableService {
         var payableModel = payableRepository.findById(id).orElseThrow(() -> new PayableException("Payable not found"));
         return PayableMapper.INSTANCE.toPayableEntity(payableModel);
     }
+
+    public void cancelPayable(UUID id) {
+        var payable = getPayable(id);
+        payable.cancel();
+        payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
+    }
 }
