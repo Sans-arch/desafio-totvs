@@ -27,16 +27,6 @@ public class Payable {
         validate();
     }
 
-    public Payable(LocalDateTime dueDate, BigDecimal value, String description) {
-        this.id = UUID.randomUUID();
-        this.dueDate = dueDate;
-        this.paymentDate = null;
-        this.value = value;
-        this.description = description;
-        this.status = PayableStatus.PENDING;
-        validate();
-    }
-
     private void validate() {
         if (this.dueDate == null) {
             throw new PayableException("Due date is required.");
