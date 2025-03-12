@@ -1,5 +1,6 @@
 package com.github.sansarch.desafio_totvs.domain.entity;
 
+import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -61,5 +62,36 @@ class PayableTest {
         Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PENDING);
         payable.cancel();
         assertEquals(PayableStatus.CANCELED, payable.getStatus());
+    }
+
+    @Test
+    void shouldMarkAsPaid() {
+        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PENDING);
+        payable.markAsPaid();
+        assertEquals(PayableStatus.PAID, payable.getStatus());
+    }
+
+    @Test
+    void shouldNotMarkAsPaidAndThrowExceptionIfPayableWasCanceled() {
+        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.CANCELED);
+        assertThrows(PayableException.class, () -> payable.markAsPaid());
+    }
+
+    @Test
+    void shouldNotMarkAsPaidAndThrowExceptionIfPayableWasAlreadyPaid() {
+        Payable payable = new Payable(1L, null, null, null, null, PayableStatus.PAID);
+        assertThrows(PayableException.class, () -> payable.markAsPaid());
+    }
+
+    @Test
+    void shouldReturnTrueIfPayableIsOverdue() {
+        Payable payable = new Payable(1L, LocalDateTime.now().minusDays(1), null, null, null, PayableStatus.PENDING);
+        assertTrue(payable.isOverdue());
+    }
+
+    @Test
+    void shouldReturnFalseIfPayableIsNotOverdue() {
+        Payable payable = new Payable(1L, LocalDateTime.now().plusDays(1), null, null, null, PayableStatus.PENDING);
+        assertFalse(payable.isOverdue());
     }
 }
