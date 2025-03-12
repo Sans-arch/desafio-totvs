@@ -6,10 +6,9 @@ import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/payables")
@@ -21,6 +20,19 @@ public class PayableController {
     @PostMapping
     public ResponseEntity<CreatePayableOutputDto> createPayable(@RequestBody CreatePayableInputDto dto) {
         var createdPayable = payableService.createPayable(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPayable);
+        var responseDto = new CreatePayableOutputDto(
+                createdPayable.getId(),
+                createdPayable.getDueDate(),
+                createdPayable.getValue(),
+                createdPayable.getDescription(),
+                createdPayable.getStatus()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity getPayable(@RequestParam UUID id) {
+        var payable = payableService.getPayable(id);
+        return ResponseEntity.ok(payable);
     }
 }
