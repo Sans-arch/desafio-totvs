@@ -15,13 +15,13 @@ descrito abaixo.
    executar a aplicação, devem ser orquestrados utilizando Docker Compose.
 - [x] O código do projeto deve ser hospedado no GitHub ou GitLab.
 - [ ] Utilizar mecanismo de autenticação.
-- [ ] Organizar o projeto com Domain Driven Design.
+- [x] Organizar o projeto com Domain Driven Design.
 - [x] Utilizar o Flyway para criar a estrutura de banco de dados.
 - [x] Utilizar JPA.
 - [ ] Todas as APIs de consulta devem ser paginadas.
 
 #### Requisitos Específicos
-1. Cadastrar a tabela no banco de dados para armazenar as contas a pagar. Deve
+- [x] Cadastrar a tabela no banco de dados para armazenar as contas a pagar. Deve
    incluir no mínimo os seguintes campos: (Faça a tipagem conforme achar adequado)
    - a. id
    - b. data_vencimento
@@ -29,16 +29,16 @@ descrito abaixo.
    - d. valor
    - e. descricao
    - f. situacao
-1. Implementar a entidade “Conta” na aplicação, de acordo com a tabela criada
+- [x] Implementar a entidade “Conta” na aplicação, de acordo com a tabela criada
    anteriormente.
 
 ##### Implementar as seguintes APIs:
-- Cadastrar conta;
-- Atualizar conta;
-- Alterar a situação da conta;
-- Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
-- Obter conta filtrando o id;
-- Obter valor total pago por período.
-- Implementar mecanismo para importação de contas a pagar via arquivo csv.
+- [x] Cadastrar conta;
+- [ ] Atualizar conta;
+- [ ] Alterar a situação da conta;
+- [ ] Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
+- [ ] Obter conta filtrando o id;
+- [ ] Obter valor total pago por período.
+- [ ] Implementar mecanismo para importação de contas a pagar via arquivo csv.
    - O arquivo será consumido via API. 
-- Implementar testes unitários.
+- [ ] Implementar testes unitários.
