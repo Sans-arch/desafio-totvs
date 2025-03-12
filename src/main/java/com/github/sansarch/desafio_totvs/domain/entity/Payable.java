@@ -54,4 +54,25 @@ public class Payable {
     public boolean isOverdue() {
         return LocalDateTime.now().isAfter(dueDate) && status == PayableStatus.PENDING;
     }
+
+    public void changeDueDate(LocalDateTime dueDate) {
+        if (dueDate == null) {
+            throw new PayableException("Due date is required.");
+        }
+        this.dueDate = dueDate;
+    }
+
+    public void changeValue(BigDecimal value) {
+        if (value == null || value.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new PayableException("Value is required.");
+        }
+        this.value = value;
+    }
+
+    public void changeDescription(String description) {
+        if (description == null || description.isBlank()) {
+            throw new PayableException("Description is required.");
+        }
+        this.description = description;
+    }
 }

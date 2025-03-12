@@ -1,8 +1,10 @@
 package com.github.sansarch.desafio_totvs.application.service;
 
 import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
+import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.mapper.PayableMapper;
 import com.github.sansarch.desafio_totvs.domain.entity.Payable;
+import com.github.sansarch.desafio_totvs.domain.entity.PayableStatus;
 import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
 import com.github.sansarch.desafio_totvs.domain.factory.PayableFactory;
 import com.github.sansarch.desafio_totvs.infrastructure.persistence.PayableRepository;
@@ -42,5 +44,26 @@ public class PayableService {
         var payable = getPayable(id);
         payable.markAsPaid();
         payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
+    }
+
+    public Payable changePayableContent(UUID id, UpdatePayableInputDto dto) {
+        var payable = getPayable(id);
+
+        if (payable.getStatus() == PayableStatus.PAID) {
+            throw new PayableException("The payable was already paid, cannot change its content.");
+        }
+
+        if (dto.dueDate() != null) {
+            payable.changeDueDate(dto.dueDate());
+        }
+        if (dto.value() != null) {
+            payable.changeValue(dto.value());
+        }
+        if (dto.description() != null) {
+            payable.changeDescription(dto.description());
+        }
+
+        payableRepository.save(PayableMapper.INSTANCE.toPayableModel(payable));
+        return payable;
     }
 }

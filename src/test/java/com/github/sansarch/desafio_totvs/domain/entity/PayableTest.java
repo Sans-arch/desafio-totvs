@@ -93,6 +93,42 @@ class PayableTest {
     }
 
     @Test
+    void shouldChangeValue() {
+        Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        BigDecimal newValue = BigDecimal.ONE;
+
+        assertNotEquals(newValue, payable.getValue());
+        payable.changeValue(newValue);
+        assertEquals(newValue, payable.getValue());
+    }
+
+    @Test
+    void shouldChangeDescription() {
+        Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        String newDescription = "New description";
+
+        assertNotEquals(newDescription, payable.getDescription());
+        payable.changeDescription(newDescription);
+        assertEquals(newDescription, payable.getDescription());
+    }
+
+    @Test
+    void shouldValidateValueChange() {
+        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(
+                LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description").changeValue(null));
+    }
+
+    @Test
+    void shouldChangeDueDate() {
+        Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        LocalDateTime newDueDate = LocalDateTime.now().plusDays(2);
+
+        assertNotEquals(newDueDate, payable.getDueDate());
+        payable.changeDueDate(newDueDate);
+        assertEquals(newDueDate, payable.getDueDate());
+    }
+
+    @Test
     void shouldValidateDueDate() {
         assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(
                 null, BigDecimal.TEN, "Test description"));

@@ -1,10 +1,9 @@
 package com.github.sansarch.desafio_totvs.infrastructure.http.controller;
 
+import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.service.PayableService;
 import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
-import com.github.sansarch.desafio_totvs.infrastructure.http.dto.CreatePayableRequestDto;
-import com.github.sansarch.desafio_totvs.infrastructure.http.dto.CreatePayableResponseDto;
-import com.github.sansarch.desafio_totvs.infrastructure.http.dto.GetPayableResponseDto;
+import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +41,20 @@ public class PayableController {
                 payable.getValue(),
                 payable.getDescription(),
                 payable.getStatus()
+        );
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdatePayableResponseDto> changePayableContent(@PathVariable UUID id, @RequestBody UpdatePayableRequestDto dto) {
+        var input = new UpdatePayableInputDto(dto.dueDate(), dto.value(), dto.description());
+        var updatedPayable = payableService.changePayableContent(id, input);
+        var responseDto = new UpdatePayableResponseDto(
+                updatedPayable.getId(),
+                updatedPayable.getDueDate(),
+                updatedPayable.getValue(),
+                updatedPayable.getDescription(),
+                updatedPayable.getStatus()
         );
         return ResponseEntity.ok(responseDto);
     }
