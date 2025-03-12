@@ -3,6 +3,7 @@ package com.github.sansarch.desafio_totvs.infrastructure.persistence.model;
 import com.github.sansarch.desafio_totvs.domain.entity.PayableStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
