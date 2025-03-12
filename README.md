@@ -39,6 +39,6 @@ descrito abaixo.
 - [x] Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
 - [x] Obter conta filtrando o id;
 - [x] Obter valor total pago por período.
-- [ ] Implementar mecanismo para importação de contas a pagar via arquivo csv.
+- [x] Implementar mecanismo para importação de contas a pagar via arquivo csv.
    - O arquivo será consumido via API. 
 - [ ] Implementar testes unitários.
