@@ -1,5 +1,6 @@
 package com.github.sansarch.desafio_totvs.domain.entity;
 
+import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +18,19 @@ public class Payable {
     private String description;
     private PayableStatus status;
 
+    public void markAsPaid() {
+        if (this.status != PayableStatus.PENDING) {
+            throw new PayableException("The payable was already paid or canceled.");
+        }
+        this.paymentDate = LocalDateTime.now();
+        this.status = PayableStatus.PAID;
+    }
+
     public void cancel() {
         this.status = PayableStatus.CANCELED;
+    }
+
+    public boolean isOverdue() {
+        return LocalDateTime.now().isAfter(dueDate) && status == PayableStatus.PENDING;
     }
 }
