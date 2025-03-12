@@ -36,7 +36,7 @@ descrito abaixo.
 - [x] Cadastrar conta;
 - [x] Atualizar conta;
 - [x] Alterar a situação da conta;
-- [ ] Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
+- [x] Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
 - [x] Obter conta filtrando o id;
 - [ ] Obter valor total pago por período.
 - [ ] Implementar mecanismo para importação de contas a pagar via arquivo csv.
