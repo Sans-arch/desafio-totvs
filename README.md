@@ -35,7 +35,7 @@ descrito abaixo.
 ##### Implementar as seguintes APIs:
 - [x] Cadastrar conta;
 - [ ] Atualizar conta;
-- [ ] Alterar a situação da conta;
+- [x] Alterar a situação da conta;
 - [ ] Obter a lista de contas a pagar, com filtro de data de vencimento e descrição;
 - [x] Obter conta filtrando o id;
 - [ ] Obter valor total pago por período.
