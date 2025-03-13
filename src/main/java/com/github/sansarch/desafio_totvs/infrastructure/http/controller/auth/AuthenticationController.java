@@ -33,10 +33,21 @@ public class AuthenticationController {
 
     @Operation(
             description = "Login into the application and obtain a token to use for secured endpoints",
-            summary = "Login"
+            summary = "Login",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Token generated successfully",
+                            content = @Content(mediaType = "application/json")
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Invalid credentials"
+                    )
+            }
     )
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody AuthenticationDto data) {
+    public ResponseEntity<String> login(@RequestBody AuthenticationDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
