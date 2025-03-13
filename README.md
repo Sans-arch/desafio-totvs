@@ -14,7 +14,7 @@ descrito abaixo.
 - [x] Tanto a aplicação, banco de dados, quanto outros serviços necessários para
    executar a aplicação, devem ser orquestrados utilizando Docker Compose.
 - [x] O código do projeto deve ser hospedado no GitHub ou GitLab.
-- [ ] Utilizar mecanismo de autenticação.
+- [x] Utilizar mecanismo de autenticação.
 - [x] Organizar o projeto com Domain Driven Design.
 - [x] Utilizar o Flyway para criar a estrutura de banco de dados.
 - [x] Utilizar JPA.
