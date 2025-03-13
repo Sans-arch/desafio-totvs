@@ -10,8 +10,8 @@ descrito abaixo.
 - [x] Utilizar a linguagem de programação Java, versão 17 ou superior.
 - [x] Utilizar Spring Boot.
 - [x] Utilizar o banco de dados PostgreSQL. 
-- [ ] A aplicação deve ser executada em um container Docker.
-- [ ] Tanto a aplicação, banco de dados, quanto outros serviços necessários para
+- [x] A aplicação deve ser executada em um container Docker.
+- [x] Tanto a aplicação, banco de dados, quanto outros serviços necessários para
    executar a aplicação, devem ser orquestrados utilizando Docker Compose.
 - [x] O código do projeto deve ser hospedado no GitHub ou GitLab.
 - [ ] Utilizar mecanismo de autenticação.
