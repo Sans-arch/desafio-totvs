@@ -7,8 +7,10 @@ import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,7 +55,7 @@ public class PayableController {
     public ResponseEntity<Page<GetPayableResponseDto>> listPayableWithFilter(
             @RequestParam(required = false) String description,
             @RequestParam(name = "due_date", required = false) LocalDateTime dueDate,
-            Pageable pageable) {
+            @PageableDefault(size = 20) @ParameterObject Pageable pageable) {
         var payables = payableService.findPayables(description, dueDate, pageable)
                 .map(
                 payable -> new GetPayableResponseDto(
@@ -144,14 +146,14 @@ public class PayableController {
     @PostMapping(value = "/import", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity importPayablesFromCsv(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
-            return ResponseEntity.badRequest().body("Arquivo inválido. Envie um arquivo CSV.");
+            return ResponseEntity.badRequest().body("Invalid file. Send a CSV file.");
         }
 
         try {
             payableService.processCsv(file);
-            return ResponseEntity.ok("Importação realizada com sucesso.");
+            return ResponseEntity.ok("Importation successfully.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar o arquivo: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file: " + e.getMessage());
         }
     }
 }
