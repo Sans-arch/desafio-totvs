@@ -41,4 +41,4 @@ descrito abaixo.
 - [x] Obter valor total pago por período.
 - [x] Implementar mecanismo para importação de contas a pagar via arquivo csv.
    - O arquivo será consumido via API. 
-- [ ] Implementar testes unitários.
+- [x] Implementar testes unitários.
