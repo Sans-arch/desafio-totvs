@@ -4,6 +4,8 @@ import com.github.sansarch.desafio_totvs.application.dto.CreatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.service.PayableService;
 import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +22,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/payables")
 @RequiredArgsConstructor
+@Tag(name = "Payables")
 public class PayableController {
 
     private final PayableService payableService;
 
+    @Operation(
+            description = "Create a payable",
+            summary = "Create a payable"
+    )
     @PostMapping
     public ResponseEntity<CreatePayableResponseDto> createPayable(@RequestBody CreatePayableRequestDto dto) {
         var input = new CreatePayableInputDto(dto.dueDate(), dto.value(), dto.description());
@@ -38,6 +45,10 @@ public class PayableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    @Operation(
+            description = "Paginated list payables with optional filters",
+            summary = "List payables"
+    )
     @GetMapping
     public ResponseEntity<Page<GetPayableResponseDto>> listPayableWithFilter(
             @RequestParam(required = false) String description,
@@ -56,6 +67,10 @@ public class PayableController {
         return ResponseEntity.ok(payables);
     }
 
+    @Operation(
+            description = "Get a payable by id",
+            summary = "Get a payable"
+    )
     @GetMapping("/{id}")
     public ResponseEntity<GetPayableResponseDto> getPayable(@PathVariable UUID id) {
         var payable = payableService.getPayable(id);
@@ -69,6 +84,10 @@ public class PayableController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Operation(
+            description = "Get total paid in a period",
+            summary = "Get total paid"
+    )
     @GetMapping("/total-paid")
     public ResponseEntity<TotalPaidResponseDto> getTotalPaid(
             @RequestParam(name = "start_date")
@@ -80,6 +99,10 @@ public class PayableController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Operation(
+            description = "Change payable content",
+            summary = "Change payable content"
+    )
     @PatchMapping("/{id}")
     public ResponseEntity<UpdatePayableResponseDto> changePayableContent(@PathVariable UUID id, @RequestBody UpdatePayableRequestDto dto) {
         var input = new UpdatePayableInputDto(dto.dueDate(), dto.value(), dto.description());
@@ -94,18 +117,30 @@ public class PayableController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @Operation(
+            description = "Pay a payable",
+            summary = "Pay a payable"
+    )
     @PatchMapping("/{id}/pay")
     public ResponseEntity<Void> payPayable(@PathVariable UUID id) {
         payableService.payPayable(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            description = "Cancel a payable",
+            summary = "Cancel a payable"
+    )
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelPayable(@PathVariable UUID id) {
         payableService.cancelPayable(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            description = "Import payables from a CSV file",
+            summary = "Import payables"
+    )
     @PostMapping(value = "/import", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity importPayablesFromCsv(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
