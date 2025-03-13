@@ -6,7 +6,8 @@ import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.mapper.PayableMapper;
 import com.github.sansarch.desafio_totvs.domain.entity.Payable;
 import com.github.sansarch.desafio_totvs.domain.entity.PayableStatus;
-import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableAlreadyPaidException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableNotFoundException;
 import com.github.sansarch.desafio_totvs.domain.factory.PayableFactory;
 import com.github.sansarch.desafio_totvs.infrastructure.persistence.PayableRepository;
 import com.github.sansarch.desafio_totvs.infrastructure.persistence.filter.PayableSpecification;
@@ -61,7 +62,7 @@ public class PayableService {
     }
 
     public Payable getPayable(UUID id) {
-        var payableModel = payableRepository.findById(id).orElseThrow(() -> new PayableException("Payable not found"));
+        var payableModel = payableRepository.findById(id).orElseThrow(() -> new PayableNotFoundException("Payable not found"));
         return PayableMapper.INSTANCE.toPayableEntity(payableModel);
     }
 
@@ -81,7 +82,7 @@ public class PayableService {
         var payable = getPayable(id);
 
         if (payable.getStatus() == PayableStatus.PAID) {
-            throw new PayableException("The payable was already paid, cannot change its content.");
+            throw new PayableAlreadyPaidException("The payable was already paid, cannot change its content.");
         }
 
         if (dto.dueDate() != null) {
