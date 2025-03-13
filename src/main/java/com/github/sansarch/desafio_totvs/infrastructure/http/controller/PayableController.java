@@ -5,6 +5,7 @@ import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.service.PayableService;
 import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/payables")
 @RequiredArgsConstructor
 @Tag(name = "Payables")
+@SecurityRequirement(name = "bearerAuth")
 public class PayableController {
 
     private final PayableService payableService;
