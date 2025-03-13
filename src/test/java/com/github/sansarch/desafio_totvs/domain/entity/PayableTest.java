@@ -1,6 +1,9 @@
 package com.github.sansarch.desafio_totvs.domain.entity;
 
-import com.github.sansarch.desafio_totvs.domain.exception.PayableException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableAlreadyPaidException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableDescriptionRequiredException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableDueDateRequiredException;
+import com.github.sansarch.desafio_totvs.domain.exception.payable.PayableValueRequiredException;
 import com.github.sansarch.desafio_totvs.domain.factory.PayableFactory;
 import org.junit.jupiter.api.Test;
 
@@ -55,14 +58,14 @@ class PayableTest {
     void shouldNotAllowMarkingPayableAsPaidIfAlreadyPaid() {
         Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
         payable.markAsPaid();
-        assertThrows(PayableException.class, payable::markAsPaid);
+        assertThrows(PayableAlreadyPaidException.class, payable::markAsPaid);
     }
 
     @Test
     void shouldNotAllowMarkingPayableAsPaidIfCanceled() {
         Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
         payable.cancel();
-        assertThrows(PayableException.class, payable::markAsPaid);
+        assertThrows(PayableAlreadyPaidException.class, payable::markAsPaid);
     }
 
     @Test
@@ -114,7 +117,7 @@ class PayableTest {
 
     @Test
     void shouldValidateValueChange() {
-        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(
+        assertThrows(PayableValueRequiredException.class, () -> PayableFactory.createNewPayable(
                 LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description").changeValue(null));
     }
 
@@ -130,19 +133,19 @@ class PayableTest {
 
     @Test
     void shouldValidateDueDate() {
-        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(
+        assertThrows(PayableDueDateRequiredException.class, () -> PayableFactory.createNewPayable(
                 null, BigDecimal.TEN, "Test description"));
     }
 
     @Test
     void shouldValidateValue() {
-        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(
+        assertThrows(PayableValueRequiredException.class, () -> PayableFactory.createNewPayable(
                 LocalDateTime.now().plusDays(1), null, "Test description"));
     }
 
     @Test
     void shouldValidateDescription() {
-        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, null));
-        assertThrows(PayableException.class, () -> PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, ""));
+        assertThrows(PayableDescriptionRequiredException.class, () -> PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, null));
+        assertThrows(PayableDescriptionRequiredException.class, () -> PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, ""));
     }
 }
