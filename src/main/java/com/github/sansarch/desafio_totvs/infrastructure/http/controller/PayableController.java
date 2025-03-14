@@ -5,6 +5,8 @@ import com.github.sansarch.desafio_totvs.application.dto.UpdatePayableInputDto;
 import com.github.sansarch.desafio_totvs.application.service.PayableService;
 import com.github.sansarch.desafio_totvs.infrastructure.http.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -133,7 +135,18 @@ public class PayableController {
 
     @Operation(
             description = "Cancel a payable",
-            summary = "Cancel a payable"
+            summary = "Cancel a payable",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Payable canceled successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Payable already paid or canceled",
+                            content = @Content(mediaType = "application/json")
+                    )
+            }
     )
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelPayable(@PathVariable UUID id) {

@@ -51,6 +51,9 @@ public class Payable {
     }
 
     public void cancel() {
+        if (this.status == PayableStatus.PAID || this.status == PayableStatus.CANCELED) {
+            throw new PayableAlreadyPaidException("The payable was already paid or canceled.");
+        }
         this.status = PayableStatus.CANCELED;
     }
 

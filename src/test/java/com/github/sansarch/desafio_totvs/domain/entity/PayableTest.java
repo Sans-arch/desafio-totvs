@@ -76,6 +76,20 @@ class PayableTest {
     }
 
     @Test
+    void shouldNotAllowCancelIfAlreadyPaid() {
+        Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        payable.markAsPaid();
+        assertThrows(PayableAlreadyPaidException.class, payable::cancel);
+    }
+
+    @Test
+    void shouldNotAllowCancelIfAlreadyCanceled() {
+        Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().plusDays(1), BigDecimal.TEN, "Test description");
+        payable.cancel();
+        assertThrows(PayableAlreadyPaidException.class, payable::cancel);
+    }
+
+    @Test
     void shouldIdentifyPayableAsOverdue() {
         Payable payable = PayableFactory.createNewPayable(LocalDateTime.now().minusDays(1), BigDecimal.TEN, "Test description");
         assertTrue(payable.isOverdue());
