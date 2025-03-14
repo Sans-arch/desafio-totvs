@@ -1,4 +1,3 @@
-
 ### Desafio Backend
 Neste desafio você deverá implementar uma API REST para um sistema simples de
 contas a pagar. O sistema permitirá realizar o **CRUD de uma conta a pagar**, alterar a
@@ -42,3 +41,27 @@ descrito abaixo.
 - [x] Implementar mecanismo para importação de contas a pagar via arquivo csv.
    - O arquivo será consumido via API. 
 - [x] Implementar testes unitários.
+
+# Payables API
+
+Uma API RESTful para gerenciamento de contas a pagar, construída com Spring Boot e PostgreSQL.
+## Início Rápido
+
+### Pré-requisitos
+- Docker e Docker Compose
+- Java 17+
+- Make (opcional, mas recomendado)
+
+### Documentação da API
+- Swagger UI: `http://localhost:8080/swagger-ui`
+- OpenAPI Docs: `http://localhost:8080/api-docs`
+
+### Comandos Make Disponíveis
+
+```bash
+make start      # Configuração inicial (build + docker-build + docker-up)
+make run        # Iniciar containers sem reconstruir
+make stop       # Parar containers
+make restart    # Reset completo (clean + build + docker-build + docker-up)
+make logs       # Visualizar logs dos containers
+make test      # Executar testes
