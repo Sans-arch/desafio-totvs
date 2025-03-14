@@ -8,6 +8,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/payables_db
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: 123456
+      JWT_SECRET: secretsecret
     ports:
       - "8080:8080"
 
