@@ -49,7 +49,7 @@ Uma API RESTful para gerenciamento de contas a pagar, construída com Spring Boo
 
 ### Pré-requisitos
 - Docker e Docker Compose
-- Java 17+
+- Java 21+
 - Make (opcional, mas recomendado)
 
 ### Documentação da API
