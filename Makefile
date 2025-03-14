@@ -39,3 +39,9 @@ run: docker-up
 # Stop containers without removing them
 stop:
 	docker-compose stop
+
+# Update only the application code without losing database data
+update:
+	./mvnw package -DskipTests
+	docker-compose build app
+	docker-compose up -d app

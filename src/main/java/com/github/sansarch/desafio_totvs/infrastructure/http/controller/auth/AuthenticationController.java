@@ -1,6 +1,7 @@
 package com.github.sansarch.desafio_totvs.infrastructure.http.controller.auth;
 
-import com.github.sansarch.desafio_totvs.infrastructure.http.dto.auth.AuthenticationDto;
+import com.github.sansarch.desafio_totvs.infrastructure.http.dto.auth.AuthenticationRequestDto;
+import com.github.sansarch.desafio_totvs.infrastructure.http.dto.auth.AuthenticationResponseDto;
 import com.github.sansarch.desafio_totvs.infrastructure.http.dto.auth.RegisterDto;
 import com.github.sansarch.desafio_totvs.infrastructure.http.security.JwtService;
 import com.github.sansarch.desafio_totvs.infrastructure.persistence.UserRepository;
@@ -8,14 +9,12 @@ import com.github.sansarch.desafio_totvs.infrastructure.persistence.model.UserMo
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,14 +46,13 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationDto data) {
+    public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
         var userModel = (UserModel) auth.getPrincipal();
         var token = jwtService.generateToken(userModel.getUsername());
-
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new AuthenticationResponseDto(token));
     }
 
     @Operation(description = "Register into the application", summary = "Register")
