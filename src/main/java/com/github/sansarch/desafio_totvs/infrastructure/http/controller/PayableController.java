@@ -159,16 +159,19 @@ public class PayableController {
             summary = "Import payables"
     )
     @PostMapping(value = "/import", consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity importPayablesFromCsv(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ImportationResponseDto> importPayablesFromCsv(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
-            return ResponseEntity.badRequest().body("Invalid file. Send a CSV file.");
+            var responseDto = new ImportationResponseDto("Invalid file. Send a  CSV file");
+            return ResponseEntity.badRequest().body(responseDto);
         }
 
         try {
             payableService.processCsv(file);
-            return ResponseEntity.ok("Importation successfully.");
+            var responseDto = new ImportationResponseDto("Imported successfully");
+            return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file: " + e.getMessage());
+            var responseDto = new ImportationResponseDto("Error processing file: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
 }
